@@ -39,14 +39,17 @@ Options are called with the create method:
 The directions/instructions to the user can be html.
 The default instruction string is:
 
-'Just to prove you are human and not a hacker!<br>click on the button below that matches the icon above:'
-
+Just to prove you are human and not a hacker!<br>click on the button below that matches the icon above:
+A dom div #directionsCol is created and is available for instructions, and comments
 <h3>Example Code</h3>
 
 ```
 let validator = saneCapture({
     success: () => {
-        alert("Very Good Choice");
+        $('#directionsCol').slideUp('fast', function() {
+        $(this).append('<p class="lead text-xs-center">Thank you! You're enrolled</p>').slideDown('fast');
+          // load your thank you page or redirect your user ect.
+        });
     },
     failure: () => {
         $('#directionsCol').empty().append('<p class="lead text-xs-center">Run Away!</p>');
@@ -55,7 +58,7 @@ let validator = saneCapture({
             console.log('I am outta here!');
         }, 3000);
     },
-    appendTo: $('#putHere')
+    appendTo: $('#putHere') // where on your document you would like to see the captcha
 }).create({
     numIcons: 65,
     additionalClasses: ['vert-pos', 'toWhite']
