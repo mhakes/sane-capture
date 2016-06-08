@@ -12,7 +12,7 @@ Here is an example of <a href="http://matthewhakes.com/saneCaptcha/examples/inde
 
 <h3>JSON</h3>
 In the json folder are the strings for the [Font-Awesome] (https://fontawesom.io) icons.
-This is current as of version 4.6.3
+This is current as of version 4.6.3 (No, you will not load 460 icons - unless you want to!)
 
 <h3>CSS</h3>
 
