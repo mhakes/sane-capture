@@ -35,16 +35,17 @@ This is current as of version 4.6.3 (No, you will not load 460 icons - unless yo
 <h2>Using</h2>
 
 <h3>Intializing</h3>
-On initializing your sane-captcha pass:
+On initializing your sane-captcha pass: (example code below)
  - what you want to happen on success
  - what you want to happen on failure 
  - where in your document to append the sane-captcha
 
 <h3>Methods/Options</h3>
 There is only 2 methods to saneCaptcha.
-The first is the `create` method.
-Options are called with the create method:
+The first is the create() method.
+Options are called with the create method: (example cold below)
 - numIcons  (int) * the number of icons to display the default is 50
+- loops (int) * the number of times you'd like the user to be correct - to decease the odds of "getting lucky"`
 - max (int) * the maximum ties you want the user to try the default is 3 
 - btnClass (str) * the bootstrap style of the buttons the default is btn-outline-success
 - size (str)* the font-awesome icon size the default is fa-2x
