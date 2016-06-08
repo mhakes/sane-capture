@@ -29,7 +29,17 @@ On initializing your sane-captcha pass:
 
 <h3>Options</h3>
 Options are called with the create method:
-- numIcons the number of icons to display the default is 50
+- numIcons  (int) * the number of icons to display the default is 50
+- max (int) * the maximum ties you want the user to try the default is 3 
+- btnClass (str) * the bootstrap style of the buttons the default is btn-outline-success
+- size (str)* the font-awesome icon size the default is fa-2x
+- directions (str) * Instructions to the user (see below)
+- additionalClasses (array) * pass css or unique class for the buttons
+
+The directions/instructions to the user can be html.
+The default instruction string is:
+
+'Just to prove you are human and not a hacker!<br>click on the button below that matches the icon above:'
 
 <h3>Example Code</h3>
 
