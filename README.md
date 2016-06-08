@@ -21,6 +21,16 @@ Using the mouse or by touching the correct/matching icon your users will prove t
 <script src="sane-captcha.js"></script>
 ```
 
+<h3>Intializing</h3>
+On initializing your sane-captcha pass:
+ - what you want to happen on success
+ - what you want to happen on failure 
+ - where in your document to append the sane-captcha
+
+<h3>Options</h3>
+Options are called with the create method:
+- numIcons the number of icons to display the default is 50
+
 <h3>Example Code</h3>
 
 ```
@@ -41,3 +51,10 @@ let validator = saneCapture({
     additionalClasses: ['vert-pos', 'toWhite']
 });
 ```
+
+
+
+```
+
+```
+
