@@ -14,7 +14,8 @@ const saneCapture = (args = null) => {
     let faicons = [];
     let sendBack = {};
     let opts = {
-        numIcons: 50,
+        loops: 1,
+        numIcons: 20,
         max: 3,
         attempts: 0,
         btnClass: 'btn-success-outline',
@@ -24,6 +25,7 @@ const saneCapture = (args = null) => {
     };
     let $faAppend = null;
     let layoutLoaded = false;
+    let loopsCompleted = 0;
     const setOptions = (obj) => {
         if (_.isPlainObject(obj)) {
             if (!_.isNil(obj.numIcons)) {
@@ -62,7 +64,7 @@ const saneCapture = (args = null) => {
         let faAll = _.chunk(_.shuffle(faicons), opts.numIcons)[0];
         let fa = _.chunk(_.shuffle(faAll), 5);
         $('.iconCol').empty();
-        if (opts.attempts > opts.max) {
+        if (opts.attempts === opts.max) {
             $('#faMaster').empty();
             failure();
             return;
@@ -93,8 +95,15 @@ const saneCapture = (args = null) => {
             let x = Number($(this).attr('data-inx'));
             e.preventDefault();
             if (x === inx) {
-                $(".faButton").attr('disabled', 'disabled');
-                success();
+                loopsCompleted++;
+                if (loopsCompleted === opts.loops) {
+                    $(".faButton").attr('disabled', 'disabled');
+                    success();
+                    return;
+                }
+                $('#directions').text('Great, but to make sure you didn\'t get lucky - do it again please!');
+                opts.attempts = 0;
+                createIcons();
                 return;
             }
             opts.attempts++;
