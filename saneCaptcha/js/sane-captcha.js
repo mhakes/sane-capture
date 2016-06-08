@@ -14,7 +14,7 @@ const saneCapture = (args = null) => {
     let faicons = [];
     let sendBack = {};
     let opts = {
-        numIcons: 20,
+        numIcons: 50,
         max: 3,
         attempts: 0,
         btnClass: 'btn-success-outline',
