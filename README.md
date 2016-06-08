@@ -22,8 +22,10 @@ This is current as of version 4.6.3
 <h3>Scripts</h3>
 
 ```
+<!-- lodash for shuffling, randomizing and chunking -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.13.1/lodash.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<!-- to avoid the bs4 error in some browers, load tether -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.3.2/js/tether.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/js/bootstrap.min.js"></script>
 <script src="sane-captcha.js"></script>
