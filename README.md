@@ -27,7 +27,9 @@ On initializing your sane-captcha pass:
  - what you want to happen on failure 
  - where in your document to append the sane-captcha
 
-<h3>Options</h3>
+<h3>Methods/Options</h3>
+There is only 2 methods to saneCaptcha.
+The first is the `create` method.
 Options are called with the create method:
 - numIcons  (int) * the number of icons to display the default is 50
 - max (int) * the maximum ties you want the user to try the default is 3 
@@ -41,6 +43,14 @@ The default instruction string is:
 
 Just to prove you are human and not a hacker!<br>click on the button below that matches the icon above:
 A dom div #directionsCol is created and is available for instructions, and comments
+
+The second method is appendTo
+If you'd like to separate for later and not pass the dom element on initialization
+you would call
+```
+validator.appendTo($('#putHere');
+```
+
 <h3>Example Code</h3>
 
 ```
@@ -58,7 +68,7 @@ let validator = saneCapture({
             console.log('I am outta here!');
         }, 3000);
     },
-    appendTo: $('#putHere') // where on your document you would like to see the captcha
+    appendTo: $('#putHere') // where on your document you would like to see the captcha you can pass just the id #putHere
 }).create({
     numIcons: 65,
     additionalClasses: ['vert-pos', 'toWhite']
