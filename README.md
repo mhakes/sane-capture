@@ -4,6 +4,12 @@ A user friendly captcha - its just buttons
 This is an ES6 script that incorporates Bootstrap and Font-awesome to producea user freindly captcha.
 Using the mouse or by touching the correct/matching icon your users will prove to you that they are human - and not a bot!
 
+<h2>Requirements</h2>
+
+<h3>JSON</h3>
+In the json folder are the strings for the [Font-Awesome] (https://fontawesom.io) icons.
+This is current as of version 4.6.3
+
 <h3>CSS</h3>
 
 ```
@@ -20,6 +26,7 @@ Using the mouse or by touching the correct/matching icon your users will prove t
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/js/bootstrap.min.js"></script>
 <script src="sane-captcha.js"></script>
 ```
+<h2>Using</h2>
 
 <h3>Intializing</h3>
 On initializing your sane-captcha pass:
@@ -75,9 +82,5 @@ let validator = saneCapture({
 });
 ```
 
-
-
-```
-
-```
+<h3>Example file in the examples folder</h3>
 
