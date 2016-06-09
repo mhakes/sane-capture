@@ -50,13 +50,6 @@ const saneCapture = (args = null) => {
         x += `<i class="fa ${opts.size} ${icon}" aria-hidden="true"></i><br></button></p>`;
         return x;
     };
-    const createMaster = ($i) => {
-        let $s = $('<span class="fa-stack fa-lg"><i class="fa fa-square-o fa-stack-2x"></i></span>');
-        $i.addClass('fa-stack-1x');
-        $i.removeClass(opts.size);
-        $s.append($i);
-        return $s;
-    };
     const createIcons = () => {
         let inx = 1;
         let $org = null;
