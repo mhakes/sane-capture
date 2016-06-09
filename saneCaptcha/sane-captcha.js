@@ -88,12 +88,16 @@ const saneCapture = (args = null) => {
         }
         inx = _.random(1, opts.numIcons);
         $org = $('[data-inx="' + inx + '"');
-        $c = $org.find('.fa').clone();
-        $c.addClass('element');
+        $c = $org.clone();
+        $c.attr('data-inx', '60000');
+        $c.addClass('element faDummy').removeClass('btn-block');
         $('#faMaster').empty().append($c);
         $('.faButton').on('click', function(e) {
             let x = Number($(this).attr('data-inx'));
             e.preventDefault();
+            if ($(this).hasClass('faDummy')) {
+                return;
+            }
             if (x === inx) {
                 loopsCompleted++;
                 if (loopsCompleted === opts.loops) {
