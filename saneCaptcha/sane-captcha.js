@@ -10,158 +10,190 @@ Requirements:
         font-awesome:   // https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css
         Bootstrap       // https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/css/bootstrap.min.css
 */
-const saneCapture = (args = null) => {
-    let faicons = [];
-    let sendBack = {};
+"use strict";
+const saneCaptcha = (setupData = null) => {
     let opts = {
-        loops: 1,
-        numIcons: 20,
-        max: 3,
-        attempts: 0,
-        btnClass: 'btn-success-outline',
-        size: 'fa-2x',
-        additionalClasses: [],
-        directions: 'Just to prove you are human and not a bot hacker!<br>click on the button below that matches the icon above:'
+        numberOfIcons: 25,
+        numberOfMasters: 3,
+        btnStyle: 'btn-success',
+        btnMaster: 'btn-primary',
+        maxAttempts: 3,
+        instructions: 'Do a good job'
     };
-    let $faAppend = null;
-    let layoutLoaded = false;
-    let loopsCompleted = 0;
-    const setOptions = (obj) => {
-        if (_.isPlainObject(obj)) {
-            if (!_.isNil(obj.numIcons)) {
-                obj.numIcons = _.toInteger(obj.numIcons);
-                if (obj.numIcons % 5 !== 0) {
-                    alert('Use any multiple of 5 for the number of icons, up to 450!');
-                    return;
-                }
-            }
-            opts = _.merge(opts, obj);
-            opts.attempts = 0;
-        }
-    };
-    let success = () => {
-        alert('Very Good!');
-    };
-    let failure = () => {
-        alert('You are a bot! Run Away');
-    };
+    let sc = {};
+    let $appendTo = null;
+    let success = null;
+    let failure = null;
+    let pathToIcons = null;
+    let icons = [];
+    let indexi = [];
+    let tableCreated = false;
+    let iconsLoaded = false;
     const makeIcon = (icon, inx) => {
-        let x = `<p><button class="btn ${opts.btnClass} btn-block faButton" data-inx="${inx}">`;
-        x += `<i class="fa ${opts.size} ${icon}" aria-hidden="true"></i><br></button></p>`;
-        return x;
+        let b = `<button data-sc="${icon}" class="btn ${opts.btnStyle} scButton"`;
+        b += `data-inx="${inx}"><i class="fa fa-2x ${icon}"></i></button>`;
+        return b;
     };
     const createIcons = () => {
+        let working = _.chunk(_.chunk(_.shuffle(icons), opts.numberOfIcons)[0], 5);
         let inx = 1;
-        let $org = null;
-        let $c = null;
-        let faAll = _.chunk(_.shuffle(faicons), opts.numIcons)[0];
-        let fa = _.chunk(_.shuffle(faAll), 5);
-        $('.iconCol').empty();
-        if (opts.attempts === opts.max) {
-            $('#faMaster').empty();
-            failure();
-            return;
-        }
-        if (opts.attempts > 0) {
-            $('#directions').html('Sorry, try again');
-        }
-        _.forEach(fa, function(row, i) {
-            let col = 0;
+        $('#saneCaptchaTable').hide();
+        _.forEach(_.shuffle(working), function(row) {
+            let tr = '<tr>';
             _.forEach(row, function(icon) {
-                let x = makeIcon(icon, inx);
-                $('#col' + col).append(x);
+                let i = makeIcon(icon, inx);
+                tr += `<td title="${icon}" class="text-xs-center scTD">` + i + '</td>';
                 inx++;
-                col++;
             });
+            tr += '</tr>';
+            $('#saneCaptchaTable').append(tr);
         });
-        if (opts.additionalClasses.length) {
-            for (let i of opts.additionalClasses) {
-                $('.faButton').addClass(i);
-            }
-        }
-        inx = _.random(1, opts.numIcons);
-        $org = $('[data-inx="' + inx + '"');
-        $c = $org.clone();
-        $c.attr('data-inx', '60000');
-        $c.addClass('element faDummy').removeClass('btn-block');
-        $('#faMaster').empty().append($c);
-        $('.faButton').on('click', function(e) {
-            let x = Number($(this).attr('data-inx'));
+        _.forEach(indexi, function(i) {
+            let $a = $(`[data-inx="${i}"]`);
+            let $b = $a.clone(true);
+            $b.removeClass(`scButton ${opts.btnStyle}`).addClass(`scKey ${opts.btnMaster}`);
+            $('#saneCaptchaKeys').append($b);
+        });
+        $(".scButton").click(function(e) {
+            let $t = $(this);
+            let inx = Number($t.attr('data-inx'));
+            let sc = $t.attr('data-sc');
             e.preventDefault();
-            if ($(this).hasClass('faDummy')) {
+            if ($t.hasClass('sbKey')) {
                 return;
             }
-            if (x === inx) {
-                loopsCompleted++;
-                if (loopsCompleted === opts.loops) {
-                    $(".faButton").attr('disabled', 'disabled');
-                    success();
+            if (_.indexOf(indexi, inx) === -1) {
+                opts.attempts++;
+                if (opts.attempts >= opts.maxAttempts) {
+                    failure();
                     return;
                 }
-                $('#directions').text('Great, but to make sure you didn\'t get lucky - do it again please!');
-                opts.attempts = 0;
+                $('#saneCaptchaInstructions').html('Opps! Try again.<br>' + opts.instructions);
+                setIndexi();
+                return;
+            }
+            $t.parent().addClass('bg-success');
+            $t.css('background-color', 'black').attr('disabled', 'disabled');
+            $('#saneCaptchaKeys').find('.' + sc).parent().hide();
+            indexi = _.without(indexi, inx);
+            if (_.size(indexi) === 0) {
+                success();
+            }
+        });
+        $('')
+        $('#saneCaptchaTable').show();
+    };
+    const createTable = () => {
+        let $row = $('<div id="saneCaptchaWrapper" class="row"></row>');
+        let $col = $('<div/>', {
+            id: 'saneCaptchaCol',
+            'class': 'col-md-offset-3 col-md-6 text-xs-center'
+        });
+        let $p = $('<p/>', {
+            id: 'saneCaptchaKeys',
+            'class': 'btn-group text-xs-center'
+        });
+        $col.append($p);
+        let $dir = $('<div>', {
+            'class': 'text-xs-center',
+            html: '<p id="saneCaptchaInstructions" class="text-xs-center"></p>'
+        });
+        $col.append($dir);
+        let $table = $('<table/>', {
+            'class': 'table table-bordered',
+            id: 'saneCaptchaTable'
+        });
+        $col.append($table);
+        $row.append($col);
+        $appendTo.append($row);
+        $('#saneCaptchaInstructions').html(opts.instructions);
+        createIcons();
+    };
+    const createIndexi = () => {
+        let x = _.random(1, opts.numberOfIcons);
+        if (_.size(indexi) === opts.numberOfMasters) {
+            if (tableCreated === true) {
+                $('#saneCaptchaTable').empty();
+                $('#saneCaptchaKeys').empty();
                 createIcons();
                 return;
             }
-            opts.attempts++;
-            createIcons();
-        });
-        $('.faButton').css('color', 'black');
-
-    };
-    const createLayout = () => {
-        let $wrapper = $('<div class="row"></div>');
-        let $cols = $('<div class="col-md-offset-3 col-md-6 text-center" id="directionsCol"></div>');
-        let $inner = $('<div class="row"><div class="col-md-1">&nbsp;</div></div>');
-        let directions = '<p><div class="text-xs-center masterFA parent-element lead" id="faMaster"></div></p><p><hr></p>';
-        directions += `<p id="directions" class="text-xs-center lead">${opts.directions}</p><p><hr></p>`;
-
-        for (let i = 0; i < 5; i++) {
-            $inner.append('<div class="col-md-2 iconCol" id="col' + i + '"></div >');
-        }
-        $cols.append(directions);
-        $cols.append($inner);
-        $wrapper.append($cols);
-        $faAppend.append($wrapper);
-        layoutLoaded = true;
-    };
-
-    sendBack.appendTo = ($at) => {
-        $faAppend = $at;
-        if (!layoutLoaded) {
-            createLayout();
-        }
-        return sendBack;
-    };
-    sendBack.create = (options = null) => {
-        if (!_.isNull(options)) {
-            setOptions(options);
-        }
-        if (_.isNull($faAppend)) {
-            alert('Where should put the icons (call appendTo)?');
+            tableCreated = true;
+            createTable();
             return;
         }
-        $.getJSON('../json/fa.json', function(json) {
-            faicons = json;
-            createIcons();
+        if (_.indexOf(indexi, x) === -1) {
+            indexi.push(x);
+        }
+        createIndexi();
+    }
+    const setIndexi = () => {
+        indexi = [];
+        if (iconsLoaded === true) {
+            createIndexi();
+            return;
+        }
+        $.getJSON(pathToIcons, function(json, xh) {
+            icons = json;
+            opts.attempts = 0;
+            iconsLoaded = true;
+            createIndexi();
         });
     };
-    if (!_.isNull(args)) {
-        if (!_.isNil(args.success) && _.isFunction(args.success)) {
-            success = args.success;
-        }
-        if (!_.isNil(args.failure) && _.isFunction(args.failure)) {
-            failure = args.failure;
-        }
-        if (!_.isNil(args.appendTo)) {
-            if (args.appendTo instanceof jQuery) {
-                $faAppend = args.appendTo;
-                createLayout();
-            } else if (_.isString(args.appendTo) && _.indexOf(args.appendTo, '#') === 0) {
-                $faAppend = $(args.appendTo);
-                createLayout();
+    const setup = (obj) => {
+        if (!_.isNil(obj.success)) {
+            if (_.isFunction(obj.success)) {
+                success = obj.success;
             }
+            obj = _.omit(obj, ['success']);
         }
+        if (!_.isNil(obj.failure)) {
+            if (_.isFunction(obj.failure)) {
+                failure = obj.failure;
+            }
+            obj = _.omit(obj, ['failure']);
+
+        }
+        if (!_.isNil(obj.appendTo)) {
+            if (obj.appendTo instanceof jQuery) {
+                $appendTo = obj.appendTo;
+            }
+            obj = _.omit(obj, ['appendTo']);
+        }
+        if (!_.isNil(obj.pathToIcons)) {
+            if (_.isString(obj.pathToIcons)) {
+                pathToIcons = obj.pathToIcons;
+
+            }
+            obj = _.omit(obj, ['pathToIcons']);
+        }
+        if (_.isPlainObject(obj)) {
+            opts = _.merge(opts, obj);
+        }
+    };
+    if (!_.isNull(setupData)) {
+        setup(setupData);
     }
-    return sendBack;
+    sc.setup = setup;
+    const create = () => {
+        if (_.isNull(success)) {
+            console.log('Add a success callback!');
+            return;
+        }
+        if (_.isNull(failure)) {
+            console.log('Add a failure callback!');
+            return;
+        }
+        if (_.isNull($appendTo)) {
+            console.log('Add the dom location for saneCaptcha!');
+            return;
+        }
+        if (_.isNull(pathToIcons)) {
+            console.log('Add the path to the location of the json file!');
+            return;
+        }
+        setIndexi();
+    };
+    sc.create = create;
+    return sc;
 };
